@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Xác nhận thanh toán</title>
+
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+</head>
+
+<body class="min-vh-100 d-flex flex-column">
+
+	<!-- ===== HEADER ===== -->
+	<header class="container-fluid px-0 text-white"
+		style="background-color: #003865; height: 56px;">
+		<div class="d-flex align-items-center h-100">
+
+			<div class="fw-bold border-end h-100 d-flex align-items-center px-3"
+				style="width: 200px;">STUDENT'S OFFICE</div>
+
+			<div class="dropdown h-100">
+				<a
+					class="nav-link text-white px-3 h-100 d-flex align-items-center border-end"
+					th:href="@{/ThanhToanHocPhi}"> Thanh toán học phí</a>
+
+			</div>
+
+			<div class="flex-grow-1"></div>
+
+			<div class="px-3 small d-flex align-items-center">
+				<span th:if="${session.hv != null}"> Xin chào <strong
+					th:text="${session.hv.hoTen}"></strong>
+				</span> <a href="/DangXuat"
+					class="btn btn-sm btn-outline-light ms-3 border-0"> Đăng xuất </a>
+			</div>
+
+		</div>
+	</header>
+
+
+
+	<!-- ===== MAIN ===== -->
+	<main class="container-fluid px-0 flex-grow-1">
+		<div class="d-flex" style="min-height: calc(100vh - 56px);">
+
+			<!-- ===== SIDEBAR ===== -->
+			<aside class="bg-light border-end p-3"
+				style="width: 200px; flex-shrink: 0;">
+				<h6 class="mb-3 fw-bold">Hoc viên</h6>
+
+				<div class="mb-2">
+					<a th:href="@{/ThongTinHocVien}" class="text-decoration-none">
+						Thông tin học viên </a>
+				</div>
+
+				<div class="mb-2">
+					<a th:href="@{/DanhSachKhoaHoc}" class="text-decoration-none">
+						Đăng ký Học Phần </a>
+				</div>
+				<div class="mb-2">
+					<a th:href="@{/LopHocDaDangKy}" class="text-decoration-none">
+						Lớp Học Đã Đăng Ký </a>
+				</div>
+				<div class="mb-2">
+					<a href="/DangXuat" class="text-decoration-none text-danger">
+						Đăng xuất </a>
+				</div>
+			</aside>
+
+			<!-- ===== CONTENT ===== -->
+			<section class="flex-grow-1 p-4">
+				<h4 class="mb-4">Xác nhận thanh toán</h4>
+
+				<div class="row">
+					<!-- ===== CỘT TRÁI: DANH SÁCH LỚP ===== -->
+					<div class="col-md-6">
+						<table class="table">
+							<tr th:each="lh : ${dsLop}">
+								<td th:text="${lh.tenLop}"></td>
+								<td class="text-end"
+									th:text="${#numbers.formatDecimal(lh.hocPhi,0,'COMMA',0,'POINT')} + ' đ'">
+								</td>
+							</tr>
+						</table>
+
+						<h5 class="text-end">
+							Tổng tiền: <strong
+								th:text="${#numbers.formatDecimal(tongTien,0,'COMMA',0,'POINT')} + ' đ'">
+							</strong>
+						</h5>
+					</div>
+
+					<!-- ===== CỘT PHẢI: QR + GHI CHÚ + XÁC NHẬN ===== -->
+					<div class="col-md-6">
+						<div class="alert alert-warning">
+							<strong>Lưu ý:</strong>
+							<ul class="mb-0 mt-2">
+								<li>Sau khi <strong>hoàn tất thanh toán</strong>, vui lòng
+									nhấn <strong>“Tôi đã thanh toán”</strong>.
+								</li>
+								<li><strong>Không được thoát trang</strong> hoặc tải lại
+									trang khi đã thanh toán.</li>
+							</ul>
+						</div>
+
+						<img class="d-block mx-auto mb-3" style="max-width: 220px;"
+							th:src="|https://img.vietqr.io/image/970415-106877010969-compact.png
+                 ?amount=${tongTien}
+                 &addInfo=${qrAddInfo}
+                 &accountName=PHU%20HOANG%20TRONG|">
+
+						<form method="post" th:action="@{/XacNhanThanhToan}">
+							<input type="hidden" name="dsMaLop"
+								th:value="${#strings.arrayJoin(dsMaLop, ',')}">
+
+							<button class="btn btn-success w-100">Tôi đã thanh toán
+							</button>
+						</form>
+					</div>
+				</div>
+			</section>
+
+
+		</div>
+	</main>
+
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Đăng ký lớp học</title>
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+</head>
+<body>
+
+	<div class="container-fluid px-0 mt-4">
+		<div class="row g-1">
+			<!-- Cột trái -->
+			<div class="col-auto bg-light p-2 border-end">
+
+				<!-- Giữ nguyên các <a> và <p> -->
+				<div class="mb-2">
+					<a th:if="${session.hv == null}" href="/DangNhap">Đăng nhập</a>
+				</div>
+
+				<div class="mb-2">
+					<p th:if="${session.hv != null}" th:text="${session.hv.hoTen}"></p>
+				</div>
+
+				<div class="mb-2">
+					<a href="">Thông tin cá nhân</a>
+				</div>
+				<div class="mb-2">
+					<a href="/QuanLyLopHoc">Quản lý lớp học</a>
+				</div>
+				<div class="mb-2">
+					<a href="">Dang Xuat</a>
+				</div>
+			</div>
+
+			<!-- Cột phải -->
+			<div class="col p-3">
+
+				</div>
+
+			</div>
+		</div>
+
+
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Chi Tiết Lịch Dạy</title>
+
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+</head>
+
+<body class="min-vh-100 d-flex flex-column">
+
+	<!-- ===== HEADER ===== -->
+	<header class="container-fluid px-0 text-white"
+		style="background-color: #003865; border-bottom: 1px solid rgba(255, 255, 255, 0.35); height: 56px;">
+		<div class="d-flex align-items-center h-100">
+			<a th:href="@{/TrangChuGiangVien}"
+				class="fw-bold border-end h-100 d-flex align-items-center px-3 text-white text-decoration-none link-light"
+				style="border-color: rgba(255, 255, 255, 0.35); width: 200px">
+				TEACHER PORTAL </a>
+
+
+			<div class="flex-grow-1"></div>
+			<div class="px-3 small">
+				<span th:if="${session.gv != null}">Xin chào <strong
+					th:text="${session.gv.tenGV}"></strong></span> <a href="/DangXuatGV"
+					class="btn btn-sm btn-outline-light ms-2 border-0"> <i
+					class="bi bi-box-arrow-right"></i> Đăng xuất
+				</a>
+			</div>
+		</div>
+	</header>
+
+	<main class="container-fluid px-0 flex-grow-1">
+		<div class="d-flex align-items-stretch"
+			style="min-height: calc(100vh - 56px);">
+
+			<!-- ===== SIDEBAR ===== -->
+			<aside class="bg-light border-end p-3"
+				style="width: 200px; flex-shrink: 0;">
+
+
+				<div class="mb-2">
+					<a th:href="@{/ThongTinGiangVien}" class="text-decoration-none">Thông
+						tin cá nhân</a>
+				</div>
+
+				<div class="mb-2">
+					<a th:href="@{/QuanLyLichDay}" class="text-decoration-none">Quản
+						lý lịch dạy</a>
+				</div>
+
+				<div class="mb-2">
+					<a th:href="@{/QuanLyLopDay}" class="text-decoration-none">Quản
+						lý lớp dạy</a>
+				</div>
+			</aside>
+
+
+			<section class="col p-4">
+
+				<!-- THÔNG BÁO -->
+				<div th:if="${tb != null}" class="alert alert-info">
+					<span th:text="${tb}"></span>
+				</div>
+				<p th:if="${#maps.isEmpty(mapTuan)}" class="text-danger fw-bold">
+					Chưa có thời khóa biểu nào!</p>
+
+				<!-- FORM NHẬP TKB -->
+				<div class="mb-4">
+					<h5>Thêm thời khóa biểu</h5>
+					<p class="text-warning fw-bold small">Giảng viên lưu ý: Tuần 1
+						được hệ thống coi là lịch học chính của cả kì; các buổi thuộc tuần
+						khác là buổi học bù.</p>
+					<form th:action="@{/ChiTietLichDay/{maLop}(maLop=${maLop})}"
+						method="post" class="row g-3">
+						<div class="col-md-4">
+							<label class="form-label small">Ngày học</label> <input
+								type="date" name="ngayHoc" class="form-control form-control-sm"
+								required>
+						</div>
+						<div class="col-md-4">
+							<label class="form-label small">Giờ bắt đầu</label> <input
+								type="time" name="gioBatDau"
+								class="form-control form-control-sm" required>
+						</div>
+						<div class="col-md-4">
+							<label class="form-label small">Giờ kết thúc</label> <input
+								type="time" name="gioKetThuc"
+								class="form-control form-control-sm" required>
+						</div>
+						<div class="col-12 text-end">
+							<button type="submit" name="action" th:value="them"
+								class="btn btn-primary btn-sm">Thêm</button>
+						</div>
+					</form>
+				</div>
+
+				<!-- HIỂN THỊ THEO TUẦN -->
+				<div th:if="${!#maps.isEmpty(mapTuan)}">
+					<h4 class="mb-3">Thời khóa biểu theo tuần</h4>
+
+					<div th:each="entry : ${mapTuan}">
+						<div class="row fw-bold mt-3">
+							<div class="col-12" th:text="'Tuần ' + ${entry.key}"></div>
+						</div>
+
+						<div th:each="tkb : ${entry.value}"
+							class="row py-1 align-items-center border-bottom">
+							<div class="col-2">
+								Ngày học: <span
+									th:text="${#dates.format(tkb.ngayHoc,'dd/MM/yyyy')}"></span>
+							</div>
+							<div class="col-1"
+								th:text="${#dates.format(tkb.ngayHoc, 'EEEE')}"></div>
+							<div class="col-3">
+								Giờ bắt đầu: <span
+									th:text="${#dates.format(tkb.gioBatDau,'HH:mm')}"></span>
+							</div>
+							<div class="col-3">
+								Giờ kết thúc: <span
+									th:text="${#dates.format(tkb.gioKetThuc,'HH:mm')}"></span>
+							</div>
+							<div class="col-3 text-end">
+								<form th:action="@{/ChiTietLichDay/{maLop}(maLop=${maLop})}"
+									method="post"
+									th:onsubmit="return confirm('Bạn có chắc muốn xóa buổi học này?');">
+									<button type="submit" name="action"
+										th:value="@{'xoa_'+ ${tkb.maTKB}}"
+										class="btn btn-sm btn-danger">Xóa</button>
+								</form>
+							</div>
+						</div>
+
+					</div>
+				</div>
+
+
+
+				<!-- end ds not empty -->
+
+			</section>
+
+
+
+
+		</div>
+	</main>
+
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
